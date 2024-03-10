@@ -11,6 +11,8 @@ import Combine
 class CoinDataService {
     
     @Published var allCoins : [CoinModel] = []
+    
+    //For Combine code 
     private var coinSubscription : AnyCancellable?
     
     init() {
@@ -18,6 +20,31 @@ class CoinDataService {
     }
     
     private func getCoins() {
+        
+        guard let getAllCoinsURL = URL(string: "https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&per_page=100&page=1&sparkline=true&price_change_percentage=24h") else { return
+        }
+        
+        Task {
+            do {
+            let (data, response) = try await NetworkManager.download(fromURL: getAllCoinsURL)
+            let result = try NetworkManager.handleResponse(data: data, response: response, forURL: getAllCoinsURL)
+            let decocdedJson = try JSONDecoder().decode([CoinModel].self, from: result)
+                allCoins = decocdedJson
+            } catch {
+                print("Error getting all coins : \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    
+    
+    
+}
+
+//MARK: - Using Combine Framework 
+extension CoinDataService {
+    
+    private func getCoinsCombine() {
         
         guard let getAllCoinsURL = URL(string: "https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&per_page=100&page=1&sparkline=true&price_change_percentage=24h") else { return
         }
@@ -42,7 +69,6 @@ class CoinDataService {
                 self?.allCoins = returnedCoinArray
                 self?.coinSubscription?.cancel()
             }
-
-        
     }
+    
 }

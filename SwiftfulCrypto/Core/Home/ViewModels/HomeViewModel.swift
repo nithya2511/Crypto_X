@@ -8,6 +8,7 @@
 import SwiftUI
 import Combine
 
+
 class HomeViewModel : ObservableObject {
     
     
@@ -20,10 +21,28 @@ class HomeViewModel : ObservableObject {
     
     
     init() {
-       addSubscribers()
+        addSubscribers()
     }
     
+    
     func addSubscribers() {
+        
+        Task {
+            for await values in dataService.$allCoins.values {
+                self.allCoins = values
+            }
+        }
+    }
+    
+    
+    
+    
+}
+
+//MARK: - Using Combine framework
+extension HomeViewModel {
+    
+    func addSubscribersCombine() {
         
         dataService.$allCoins.sink { [weak self] returnedCoinArray in
             self?.allCoins = returnedCoinArray
@@ -31,7 +50,4 @@ class HomeViewModel : ObservableObject {
         .store(in: &cancellables)
         
     }
-    
-    
-    
 }

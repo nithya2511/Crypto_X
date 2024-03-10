@@ -39,7 +39,7 @@ extension CoinRowView {
                 .font(.caption)
                 .foregroundStyle(Color.theme.secondaryText)
                 .frame(minWidth: 20)
-            Circle()
+            CoinImageView(coin: coin)
                 .frame(width: 50, height: 50)
             Text(coin.symbol)
                 .textCase(.uppercase)

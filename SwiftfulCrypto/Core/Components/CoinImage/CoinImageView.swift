@@ -8,11 +8,28 @@
 import SwiftUI
 
 struct CoinImageView: View {
+
+    @StateObject private var vm : CoinImageViewModel
+
+    
+    init(coin : CoinModel) {
+        _vm = StateObject(wrappedValue: CoinImageViewModel(forCoin: coin))
+    }
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        if let image = vm.coinImage {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+        } else if vm.isLoading {
+            ProgressView()
+        } else {
+            Image(systemName: "questionmark")
+                .foregroundStyle(Color.theme.secondaryText)
+        }
     }
 }
 
 #Preview {
-    CoinImageView()
+    CoinImageView(coin: DeveloperPreview.instance.coin)
 }

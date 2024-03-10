@@ -23,7 +23,7 @@ struct HomeView: View {
             //content layer
             VStack {
                 homeHeader
-                
+                    
                 columnTitles
                 
                 if (!showPortFolio) {
